@@ -24,6 +24,7 @@ type Item struct {
 	Title       string
 	Parts       []uint32
 	Descendants uint32
+	Text        string
 }
 
 func FetchResource[T any](route string, result T) error {

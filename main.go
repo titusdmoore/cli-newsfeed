@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	program := tea.NewProgram(tui.GenerateInitialStateModel())
+	program := tea.NewProgram(tui.GenerateInitialStateModel(), tea.WithAltScreen(), tea.WithMouseCellMotion())
 	if _, err := program.Run(); err != nil {
 		fmt.Println("Unable to start tea program")
 		os.Exit(1)
