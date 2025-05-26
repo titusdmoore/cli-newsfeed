@@ -24,7 +24,8 @@ type StateModel struct {
 	ready        bool
 
 	// This is just a debug field
-	Message string
+	Message   string
+	DebugMode bool
 }
 type bestItemsMsg []uint32
 type itemsMsg []data.Item
@@ -127,6 +128,10 @@ func (m StateModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.SelectedItem = nil
 
 			return m, nil
+		case "0":
+			m.DebugMode = true
+
+			return m, nil
 		}
 	case tea.WindowSizeMsg:
 		// We don't really care (as of v1.0) about resizing unless we have a SelectedItem
@@ -210,10 +215,32 @@ func itemRender(m StateModel) string {
 	return fmt.Sprintf("%s\n%s\n%s", m.headerView(), m.viewport.View(), m.footerView())
 }
 
+func debugRender(m StateModel) string {
+	if len(m.Items) > 0 {
+		var builder strings.Builder
+
+		for _, item := range m.Items {
+			builder.WriteString(fmt.Sprintf("%+v", item))
+			builder.WriteString("\n\n")
+		}
+
+		return builder.String()
+	}
+
+	return "Debug"
+}
+
 // View is the render function of the program
 // TODO: Implent actual rendering logic
 func (m StateModel) View() string {
 	if m.SelectedItem != nil {
+		return itemRender(m)
+	}
+
+	switch {
+	case m.DebugMode:
+		return debugRender(m)
+	case m.SelectedItem != nil:
 		return itemRender(m)
 	}
 
