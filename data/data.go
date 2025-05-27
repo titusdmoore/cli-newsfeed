@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"os/exec"
 	"strconv"
 )
 
@@ -61,4 +62,32 @@ func FetchItems(item_ids []uint32) ([]Item, error) {
 	}
 
 	return items, nil
+}
+
+func FetchUrlContent(url string) (string, error) {
+	var content string
+
+	cmd := exec.Command("lynx", "-dump", url)
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err := cmd.Start(); err != nil {
+		return "", err
+	}
+
+	bytes, err := io.ReadAll(stdout)
+	if err != nil {
+		return "", err
+	}
+
+	content = string(bytes)
+
+	if err := cmd.Wait(); err != nil {
+		return "", err
+	}
+
+	return content, nil
+
 }
