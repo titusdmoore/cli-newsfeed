@@ -126,6 +126,7 @@ func (m StateModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.WindowSize()
 		case "esc":
 			m.SelectedItem = nil
+			m.ready = false
 
 			return m, nil
 		case "0":
